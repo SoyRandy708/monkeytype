@@ -1,18 +1,76 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from "@/layouts/Layout.astro";
 ---
 
-<Layout title="Monkey Type">
+<Layout title="MonkeyType">
   <main>
     <h1>Monkey Type</h1>
-
-    <p class="parrafo"></p>
-    <input class="input" />
+    <time id="tiempo"></time>
+    <p id="parrafo"></p>
+    <input id="input" autofocus autocomplete="off" />
   </main>
 </Layout>
 
+<script src="@/utils/index.js"></script>
+
 <style>
+  main {
+    max-width: 800px;
+    padding: 10px;
+    margin: auto;
+  }
+
   h1 {
     color: light-dark(red, green);
+  }
+
+  p {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 10px;
+    font-size: 20px;
+
+    x-letra {
+      position: relative;
+      color: gray;
+
+      /* TODO: AJUSTAR TAMAÑO DE CURSOR Y TAMAÑO ENTRE LETRAS */
+      &.activo::before {
+        content: "|";
+        color: red;
+        position: absolute;
+        left: -6px;
+        animation: 1s parpadeo infinite ease-in-out;
+      }
+
+      &.is-last::before {
+        left: 6px;
+      }
+
+      &.correct {
+        color: green;
+      }
+
+      &.incorrect {
+        color: red;
+      }
+    }
+  }
+
+  @keyframes parpadeo {
+    25% {
+      opacity: 1;
+    }
+
+    75% {
+      opacity: 0;
+    }
+  }
+
+  input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
   }
 </style>
