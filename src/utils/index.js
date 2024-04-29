@@ -1,26 +1,26 @@
-import { palabras as PALABRAS_INICIALES } from "@/constants/palabras"
+import { palabras as INITIAL_WORDS } from "@/constants/palabras"
 
-const $tiempo = document.querySelector("#tiempo")
-const $parrafo = document.querySelector("#parrafo")
+const $time = document.querySelector("#tiempo")
+const $paragraph = document.querySelector("#parrafo")
 const $input = document.querySelector("#input")
 
-const TIEMPO_INICIAL = 5
-let palabras = []
+const INITIAL_TIME = 5
+let words = []
 
-iniciarEventos()
-iniciarJuego()
+startEvents()
+startGame()
 
-function iniciarJuego () {
-  palabras = PALABRAS_INICIALES.toSorted(
+function startGame () {
+  words = INITIAL_WORDS.toSorted(
     () => Math.random() - 0.5
   ).slice(0, 50)
 
-  $parrafo.innerHTML = palabras.map((palabra) => {
-    const letras = palabra.split('')
+  $paragraph.innerHTML = words.map((palabra) => {
+    const words = palabra.split('')
 
     return `
     <x-palabra>
-    ${letras
+    ${words
         .map(letra => `<x-letra>${letra}</x-letra>`)
         .join('')
       }
@@ -28,79 +28,79 @@ function iniciarJuego () {
     `
   }).join('')
 
-  const $palabraActual = $parrafo.querySelector('x-palabra')
-  const $letraActual = $palabraActual.querySelector('x-letra')
+  const $currentWord = $paragraph.querySelector('x-palabra')
+  const $currentLetter = $currentWord.querySelector('x-letra')
 
-  $palabraActual.classList.add('activo')
-  $letraActual.classList.add('activo')
+  $currentWord.classList.add('active')
+  $currentLetter.classList.add('active')
 
-  cronometro()
+  timer()
 }
 
-function iniciarEventos () {
+function startEvents () {
   document.addEventListener('keydown', () => {
     $input.focus()
   })
 
-  $input.addEventListener('keydown', presionarTecla)
-  $input.addEventListener('keyup', soltarTecla)
+  $input.addEventListener('keydown', onKeyDown)
+  $input.addEventListener('keyup', onKeyUp)
 }
 
-function presionarTecla (evento) {
-  const { key } = evento
+function onKeyDown (event) {
+  const { key } = event
 
   if (key === ' ') {
-    console.log('espacio')
+    console.log('space')
   }
 
 }
 
-function soltarTecla () {
-  const $palabraActual = $parrafo.querySelector('x-palabra.activo')
-  const $letraActual = $palabraActual.querySelector('x-letra.activo')
+function onKeyUp () {
+  const $currentWord = $paragraph.querySelector('x-palabra.active')
+  const $currentLetter = $currentWord.querySelector('x-letra.active')
 
-  const palabraActual = $palabraActual.innerText
-  $input.maxLength = palabraActual.length
+  const textWord = $currentWord.innerText
+  $input.maxLength = textWord.length
 
-  const allLetters = $palabraActual.querySelectorAll('x-letra')
+  const allLetters = $currentWord.querySelectorAll('x-letra')
 
   allLetters.forEach(letter => letter.classList.remove('correct', 'incorrect'))
 
   $input.value.split('').forEach((letra, index) => {
-    const letterToCheck = palabraActual[index]
+    const letterToCheck = textWord[index]
     const $letter = allLetters[index]
 
     const isCorrect = letra === letterToCheck
-    const clase = isCorrect ? 'correct' : 'incorrect'
-    $letter.classList.add(clase)
+    const className = isCorrect ? 'correct' : 'incorrect'
+    $letter.classList.add(className)
   });
 
-  $letraActual.classList.remove('activo', 'is-last')
+  $currentLetter.classList.remove('active', 'is-last')
   const inputLength = $input.value.length
   const nextActiveLetter = allLetters[inputLength]
 
   if (nextActiveLetter) {
-    nextActiveLetter.classList.add('activo')
+    nextActiveLetter.classList.add('active')
   } else {
-    $letraActual.classList.add('activo', 'is-last')
+    $currentLetter.classList.add('active', 'is-last')
   }
 
-  console.log({ value: $input.value, palabraActual })
+  console.log({ value: $input.value, textWord })
 }
 
-function cronometro () {
-  let tiempoActual = TIEMPO_INICIAL
-  $tiempo.textContent = tiempoActual
+function timer () {
+  let currentTime = INITIAL_TIME
+  $time.textContent = currentTime
 
-  const reloj = setInterval(() => {
-    tiempoActual--
-    $tiempo.textContent = tiempoActual
+  const clock = setInterval(() => {
+    currentTime--
+    $time.textContent = currentTime
 
-    if (tiempoActual === 0) {
-      clearInterval(reloj)
-      terminarJuego()
+    if (currentTime === 0) {
+      clearInterval(clock)
+      endGame()
     }
   }, 1000)
 }
 
-function terminarJuego () { }
+function endGame () { }
