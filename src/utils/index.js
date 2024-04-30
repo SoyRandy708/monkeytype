@@ -19,17 +19,17 @@ function startGame () {
     const words = palabra.split('')
 
     return `
-    <x-palabra>
+    <x-word>
     ${words
-        .map(letra => `<x-letra>${letra}</x-letra>`)
+        .map(letra => `<x-letter>${letra}</x-letter>`)
         .join('')
       }
-    </x-palabra>
+    </x-word>
     `
   }).join('')
 
-  const $currentWord = $paragraph.querySelector('x-palabra')
-  const $currentLetter = $currentWord.querySelector('x-letra')
+  const $currentWord = $paragraph.querySelector('x-word')
+  const $currentLetter = $currentWord.querySelector('x-letter')
 
   $currentWord.classList.add('active')
   $currentLetter.classList.add('active')
@@ -47,28 +47,47 @@ function startEvents () {
 }
 
 function onKeyDown (event) {
+  const $currentWord = $paragraph.querySelector('x-word.active')
+  const $currentLetter = $currentWord.querySelector('x-letter.active')
+
   const { key } = event
-
   if (key === ' ') {
-    console.log('space')
-  }
+    event.preventDefault()
 
+    const $nextWord = $currentWord.nextElementSibling
+    const $nextLetter = $nextWord.querySelector('x-letter')
+
+    $currentWord.classList.remove('active', 'marked')
+    $currentLetter.classList.remove('active')
+
+    $nextWord.classList.add('active')
+    $nextLetter.classList.add('active')
+
+    $input.value = ''
+
+    const hasIncorrectLetters =
+      $currentWord.querySelectorAll('x-letter:not(.correct)').length > 0
+
+    const className = hasIncorrectLetters ? 'marked' : 'correct'
+
+    $currentWord.classList.add(className)
+  }
 }
 
 function onKeyUp () {
-  const $currentWord = $paragraph.querySelector('x-palabra.active')
-  const $currentLetter = $currentWord.querySelector('x-letra.active')
+  const $currentWord = $paragraph.querySelector('x-word.active')
+  const $currentLetter = $currentWord.querySelector('x-letter.active')
 
   const textWord = $currentWord.innerText
   $input.maxLength = textWord.length
 
-  const allLetters = $currentWord.querySelectorAll('x-letra')
+  const $allLetters = $currentWord.querySelectorAll('x-letter')
 
-  allLetters.forEach(letter => letter.classList.remove('correct', 'incorrect'))
+  $allLetters.forEach(letter => letter.classList.remove('correct', 'incorrect'))
 
   $input.value.split('').forEach((letra, index) => {
     const letterToCheck = textWord[index]
-    const $letter = allLetters[index]
+    const $letter = $allLetters[index]
 
     const isCorrect = letra === letterToCheck
     const className = isCorrect ? 'correct' : 'incorrect'
@@ -77,12 +96,14 @@ function onKeyUp () {
 
   $currentLetter.classList.remove('active', 'is-last')
   const inputLength = $input.value.length
-  const nextActiveLetter = allLetters[inputLength]
+  const $nextActiveLetter = $allLetters[inputLength]
 
-  if (nextActiveLetter) {
-    nextActiveLetter.classList.add('active')
+  if ($nextActiveLetter) {
+    $nextActiveLetter.classList.add('active')
   } else {
     $currentLetter.classList.add('active', 'is-last')
+    // TODO: Hacer que la animacion del cursor se haga correctamente en la ultima letra de la palabra
+    // TODO: Game over sino hay mas palabras
   }
 
   console.log({ value: $input.value, textWord })

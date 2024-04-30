@@ -21,7 +21,11 @@ import Layout from "@/layouts/Layout.astro";
   }
 
   h1 {
-    color: light-dark(red, green);
+    color: var(--color-1);
+  }
+
+  time {
+    color: var(--color-1);
   }
 
   p {
@@ -30,21 +34,31 @@ import Layout from "@/layouts/Layout.astro";
     gap: 5px 10px;
     font-size: 20px;
 
-    x-letra {
+    x-word {
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease-in-out;
+
+      &.marked {
+        border-color: red;
+      }
+    }
+
+    x-letter {
       position: relative;
+      display: inline-block;
       color: gray;
 
       /* TODO: AJUSTAR TAMAÑO DE CURSOR Y TAMAÑO ENTRE LETRAS */
-      &.activo::before {
+      &.active::before {
         content: "|";
         color: red;
         position: absolute;
-        left: -6px;
+        left: -60%;
         animation: 1s parpadeo infinite ease-in-out;
       }
 
       &.is-last::before {
-        left: 6px;
+        left: 60%;
       }
 
       &.correct {
