@@ -19,17 +19,17 @@ function startGame () {
     const words = palabra.split('')
 
     return `
-    <x-word>
+    <word>
     ${words
-        .map(letra => `<x-letter>${letra}</x-letter>`)
+        .map(letra => `<letter>${letra}</letter>`)
         .join('')
       }
-    </x-word>
+    </word>
     `
   }).join('')
 
-  const $currentWord = $paragraph.querySelector('x-word')
-  const $currentLetter = $currentWord.querySelector('x-letter')
+  const $currentWord = $paragraph.querySelector('word')
+  const $currentLetter = $currentWord.querySelector('letter')
 
   $currentWord.classList.add('active')
   $currentLetter.classList.add('active')
@@ -47,15 +47,15 @@ function startEvents () {
 }
 
 function onKeyDown (event) {
-  const $currentWord = $paragraph.querySelector('x-word.active')
-  const $currentLetter = $currentWord.querySelector('x-letter.active')
+  const $currentWord = $paragraph.querySelector('word.active')
+  const $currentLetter = $currentWord.querySelector('letter.active')
 
   const { key } = event
   if (key === ' ') {
     event.preventDefault()
 
     const $nextWord = $currentWord.nextElementSibling
-    const $nextLetter = $nextWord.querySelector('x-letter')
+    const $nextLetter = $nextWord.querySelector('letter')
 
     $currentWord.classList.remove('active', 'marked')
     $currentLetter.classList.remove('active')
@@ -66,22 +66,51 @@ function onKeyDown (event) {
     $input.value = ''
 
     const hasIncorrectLetters =
-      $currentWord.querySelectorAll('x-letter:not(.correct)').length > 0
+      $currentWord.querySelectorAll('letter:not(.correct)').length > 0
 
     const className = hasIncorrectLetters ? 'marked' : 'correct'
 
     $currentWord.classList.add(className)
+    return
+  }
+
+  if (key === 'Backspace') {
+    const $prevWord = $currentWord.previousElementSibling
+    const $prevLetter = $currentLetter.previousElementSibling
+
+    if (!$prevWord && !$prevLetter) {
+      event.preventDefault()
+      return
+    }
+
+    // TODO: Hacer que solo se pueda regresar hacia atras solo si la palabra anterior esta mal y no una que sea mas lejana
+    const $wordMarked = $paragraph.querySelector('word.marked')
+
+    if ($wordMarked && !$prevLetter) {
+      event.preventDefault()
+      $prevWord.classList.remove('marked')
+      $prevWord.classList.add('active')
+
+      const $letterToGo = $prevWord.querySelector('letter:last-child')
+      $currentLetter.classList.remove('active')
+      $letterToGo.classList.add('active')
+
+      $input.value = [
+        ...$prevWord.querySelectorAll('letter.correct, letter.incorrect')
+      ].map(char => char.classList.contains('correct') ? char.innerText : '*').join('')
+      return
+    }
   }
 }
 
 function onKeyUp () {
-  const $currentWord = $paragraph.querySelector('x-word.active')
-  const $currentLetter = $currentWord.querySelector('x-letter.active')
+  const $currentWord = $paragraph.querySelector('word.active')
+  const $currentLetter = $currentWord.querySelector('letter.active')
 
   const textWord = $currentWord.innerText
   $input.maxLength = textWord.length
 
-  const $allLetters = $currentWord.querySelectorAll('x-letter')
+  const $allLetters = $currentWord.querySelectorAll('letter')
 
   $allLetters.forEach(letter => letter.classList.remove('correct', 'incorrect'))
 
