@@ -1,10 +1,10 @@
 import { palabras as INITIAL_WORDS } from "@/constants/palabras"
 
-const $time = document.querySelector("#tiempo")
-const $paragraph = document.querySelector("#parrafo")
+const $time = document.querySelector("#time")
+const $paragraph = document.querySelector("#paragraph")
 const $input = document.querySelector("#input")
 
-const INITIAL_TIME = 5
+const INITIAL_TIME = 10
 let words = []
 
 startEvents()
@@ -13,7 +13,7 @@ startGame()
 function startGame () {
   words = INITIAL_WORDS.toSorted(
     () => Math.random() - 0.5
-  ).slice(0, 50)
+  ).slice(0, 10)
 
   $paragraph.innerHTML = words.map((palabra) => {
     const words = palabra.split('')
@@ -153,4 +153,25 @@ function timer () {
   }, 1000)
 }
 
-function endGame () { }
+function endGame () {
+  const $game = document.querySelector('#game')
+  const $results = document.querySelector('#results')
+  const $wpm = document.querySelector('#results .wpm')
+  const $currancy = document.querySelector('#results .currancy')
+
+  const correctWords = $paragraph.querySelectorAll('word.correct').length
+  const correctLetters = $paragraph.querySelectorAll('letter.correct').length
+  const incorrectLetters = $paragraph.querySelectorAll('letter.incorrect').length
+
+  const totalLetters = correctLetters + incorrectLetters
+  const acurrancy = totalLetters > 0
+    ? (correctLetters / totalLetters) * 100
+    : 0
+  const wpm = correctWords * 60 / INITIAL_TIME
+
+  $game.style.display = 'none'
+  $results.style.display = 'grid'
+
+  $wpm.textContent = `${wpm}`
+  $currancy.textContent = `${acurrancy.toFixed(2)}%`
+}

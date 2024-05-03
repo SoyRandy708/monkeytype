@@ -4,10 +4,24 @@ import Layout from "@/layouts/Layout.astro";
 
 <Layout title="MonkeyType">
   <main>
-    <h1>Monkey Type</h1>
-    <time id="tiempo"></time>
-    <p id="parrafo"></p>
-    <input id="input" autofocus autocomplete="off" />
+    <section id="game">
+      <h1>Monkey Type</h1>
+      <time id="time"></time>
+      <p id="paragraph"></p>
+      <input id="input" autofocus autocomplete="off" />
+    </section>
+
+    <section id="results">
+      <div>
+        <h2>WPM</h2>
+        <h3 class="wpm"></h3>
+      </div>
+
+      <div>
+        <h2>Currancy</h2>
+        <h3 class="currancy"></h3>
+      </div>
+    </section>
   </main>
 </Layout>
 
@@ -16,8 +30,15 @@ import Layout from "@/layouts/Layout.astro";
 <style>
   main {
     max-width: 800px;
-    padding: 10px;
     margin: auto;
+  }
+
+  #game {
+    display: grid;
+    place-content: center;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 20px;
   }
 
   h1 {
@@ -86,5 +107,24 @@ import Layout from "@/layouts/Layout.astro";
     top: 0;
     left: 0;
     pointer-events: none;
+  }
+
+  #results {
+    display: none;
+    place-content: center;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 20px;
+
+    h2 {
+      margin: 0;
+      color: gray;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 40px;
+      color: yellow;
+    }
   }
 </style>
