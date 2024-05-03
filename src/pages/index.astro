@@ -1,4 +1,5 @@
 ---
+import IconReload from "@/components/IconReload.astro";
 import Layout from "@/layouts/Layout.astro";
 ---
 
@@ -21,6 +22,10 @@ import Layout from "@/layouts/Layout.astro";
         <h2>Currancy</h2>
         <h3 class="currancy"></h3>
       </div>
+
+      <button id="button-reload">
+        <IconReload />
+      </button>
     </section>
   </main>
 </Layout>
@@ -125,6 +130,22 @@ import Layout from "@/layouts/Layout.astro";
       margin: 0;
       font-size: 40px;
       color: yellow;
+    }
+
+    button {
+      padding: 5px 10px;
+      opacity: 0.8;
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+      transition:
+        scale 0.3s ease,
+        opacity 0.3s ease;
+
+      &:hover {
+        scale: 1.1;
+        opacity: 1;
+      }
     }
   }
 </style>

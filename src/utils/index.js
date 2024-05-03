@@ -3,14 +3,23 @@ import { palabras as INITIAL_WORDS } from "@/constants/palabras"
 const $time = document.querySelector("#time")
 const $paragraph = document.querySelector("#paragraph")
 const $input = document.querySelector("#input")
+const $game = document.querySelector('#game')
+const $results = document.querySelector('#results')
+const $wpm = document.querySelector('#results .wpm')
+const $currancy = document.querySelector('#results .currancy')
+const $reloadButton = document.querySelector("#button-reload")
 
-const INITIAL_TIME = 10
+const INITIAL_TIME = 3
 let words = []
 
 startEvents()
 startGame()
 
 function startGame () {
+  $game.style.display = 'grid'
+  $results.style.display = 'none'
+  $input.value = ''
+
   words = INITIAL_WORDS.toSorted(
     () => Math.random() - 0.5
   ).slice(0, 10)
@@ -38,12 +47,15 @@ function startGame () {
 }
 
 function startEvents () {
+  // TODO: Empezar a contar el tiempo cuando el jugaro empiece a escribir
   document.addEventListener('keydown', () => {
     $input.focus()
   })
 
   $input.addEventListener('keydown', onKeyDown)
   $input.addEventListener('keyup', onKeyUp)
+
+  $reloadButton.addEventListener('click', startGame)
 }
 
 function onKeyDown (event) {
@@ -154,10 +166,8 @@ function timer () {
 }
 
 function endGame () {
-  const $game = document.querySelector('#game')
-  const $results = document.querySelector('#results')
-  const $wpm = document.querySelector('#results .wpm')
-  const $currancy = document.querySelector('#results .currancy')
+  $game.style.display = 'none'
+  $results.style.display = 'grid'
 
   const correctWords = $paragraph.querySelectorAll('word.correct').length
   const correctLetters = $paragraph.querySelectorAll('letter.correct').length
@@ -168,9 +178,6 @@ function endGame () {
     ? (correctLetters / totalLetters) * 100
     : 0
   const wpm = correctWords * 60 / INITIAL_TIME
-
-  $game.style.display = 'none'
-  $results.style.display = 'grid'
 
   $wpm.textContent = `${wpm}`
   $currancy.textContent = `${acurrancy.toFixed(2)}%`
