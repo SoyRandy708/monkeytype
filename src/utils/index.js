@@ -10,7 +10,10 @@ const $currancy = document.querySelector('#results .currancy')
 const $reloadButton = document.querySelector("#button-reload")
 
 const INITIAL_TIME = 3
+
+let currentTime = INITIAL_TIME
 let words = []
+let playing
 
 startEvents()
 startGame()
@@ -20,9 +23,13 @@ function startGame () {
   $results.style.display = 'none'
   $input.value = ''
 
+  playing = false
   words = INITIAL_WORDS.toSorted(
     () => Math.random() - 0.5
   ).slice(0, 10)
+
+  currentTime = INITIAL_TIME
+  $time.textContent = currentTime
 
   $paragraph.innerHTML = words.map((palabra) => {
     const words = palabra.split('')
@@ -42,19 +49,20 @@ function startGame () {
 
   $currentWord.classList.add('active')
   $currentLetter.classList.add('active')
-
-  timer()
 }
 
 function startEvents () {
-  // TODO: Empezar a contar el tiempo cuando el jugaro empiece a escribir
   document.addEventListener('keydown', () => {
     $input.focus()
+
+    if (!playing) {
+      playing = true
+      startTimer()
+    }
   })
 
   $input.addEventListener('keydown', onKeyDown)
   $input.addEventListener('keyup', onKeyUp)
-
   $reloadButton.addEventListener('click', startGame)
 }
 
@@ -146,19 +154,14 @@ function onKeyUp () {
     // TODO: Hacer que la animacion del cursor se haga correctamente en la ultima letra de la palabra
     // TODO: Game over sino hay mas palabras
   }
-
-  console.log({ value: $input.value, textWord })
 }
 
-function timer () {
-  let currentTime = INITIAL_TIME
-  $time.textContent = currentTime
-
+function startTimer () {
   const clock = setInterval(() => {
     currentTime--
     $time.textContent = currentTime
 
-    if (currentTime === 0) {
+    if (currentTime <= 0) {
       clearInterval(clock)
       endGame()
     }
