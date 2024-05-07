@@ -14,14 +14,18 @@ const INITIAL_TIME = 3
 let currentTime = INITIAL_TIME
 let words = []
 let playing
+let clock
 
 startEvents()
 startGame()
+
+// TODO: CUANDO ESTE TERMINADO, AGREGAR MAS PALABRAS, PONER MAS PALABRAS INICIALES, CAMBIAR EL TIEMPO INICIAL, AGREGAR README Y PONER MIS REDES SOCIALES
 
 function startGame () {
   $game.style.display = 'grid'
   $results.style.display = 'none'
   $input.value = ''
+  clearInterval(clock)
 
   playing = false
   words = INITIAL_WORDS.toSorted(
@@ -75,7 +79,12 @@ function onKeyDown (event) {
     event.preventDefault()
 
     const $nextWord = $currentWord.nextElementSibling
-    const $nextLetter = $nextWord.querySelector('letter')
+    const $nextLetter = $nextWord?.querySelector('letter')
+
+    if (!$nextWord) {
+      endGame()
+      return
+    }
 
     $currentWord.classList.remove('active', 'marked')
     $currentLetter.classList.remove('active')
@@ -152,12 +161,11 @@ function onKeyUp () {
   } else {
     $currentLetter.classList.add('active', 'is-last')
     // TODO: Hacer que la animacion del cursor se haga correctamente en la ultima letra de la palabra
-    // TODO: Game over sino hay mas palabras
   }
 }
 
 function startTimer () {
-  const clock = setInterval(() => {
+  clock = setInterval(() => {
     currentTime--
     $time.textContent = currentTime
 
