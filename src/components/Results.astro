@@ -1,0 +1,57 @@
+---
+import IconReload from "./IconReload.astro";
+---
+
+<section id="results">
+  <div>
+    <h2>WPM</h2>
+    <h3 class="wpm"></h3>
+  </div>
+
+  <div>
+    <h2>Currancy</h2>
+    <h3 class="currancy"></h3>
+  </div>
+
+  <button id="button-reload">
+    <IconReload />
+  </button>
+</section>
+
+<style>
+  #results {
+    display: none;
+    place-content: center;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 20px;
+
+    h2 {
+      margin: 0;
+      color: var(--text-shadow);
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 40px;
+      color: var(--color-primary);
+    }
+
+    button {
+      background-color: var(--text-correct);
+      padding: 5px 10px;
+      opacity: 0.8;
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+      transition:
+        scale 0.3s ease,
+        opacity 0.3s ease;
+
+      &:hover {
+        scale: 1.1;
+        opacity: 1;
+      }
+    }
+  }
+</style>
