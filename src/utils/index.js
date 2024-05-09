@@ -106,21 +106,19 @@ function onKeyDown (event) {
   if (key === 'Backspace') {
     const $prevWord = $currentWord.previousElementSibling
     const $prevLetter = $currentLetter.previousElementSibling
+    const $prevWordMarked = $prevWord.classList.contains('marked')
+    const $letterToGo = $prevWord.querySelector('letter:last-child')
 
     if (!$prevWord && !$prevLetter) {
       event.preventDefault()
       return
     }
 
-    // TODO: Hacer que solo se pueda regresar hacia atras solo si la palabra anterior esta mal y no una que sea mas lejana
-    const $wordMarked = $paragraph.querySelector('word.marked')
-
-    if ($wordMarked && !$prevLetter) {
+    if ($prevWordMarked && !$prevLetter) {
       event.preventDefault()
       $prevWord.classList.remove('marked')
       $prevWord.classList.add('active')
 
-      const $letterToGo = $prevWord.querySelector('letter:last-child')
       $currentLetter.classList.remove('active')
       $letterToGo.classList.add('active')
 
@@ -184,6 +182,7 @@ function endGame () {
   const correctLetters = $paragraph.querySelectorAll('letter.correct').length
   const incorrectLetters = $paragraph.querySelectorAll('letter.incorrect').length
 
+  // TODO: Hacer acumulador para contar todos los errores que tuvo el usuario mientras escriba y no solo los errores que estan al final
   const totalLetters = correctLetters + incorrectLetters
   const acurrancy = totalLetters > 0
     ? (correctLetters / totalLetters) * 100
