@@ -1,0 +1,71 @@
+---
+import IconGitHub from "./Icons/IconGitHub.astro";
+import IconLinkedIn from "./Icons/IconLinkedIn.astro";
+---
+
+<nav>
+  <h1>Monkey Type</h1>
+
+  <ul>
+    <li>
+      <a
+        href="https://github.com/SoyRandy708/monkeytype"
+        title="GitHub"
+        target="_blank"
+      >
+        <IconGitHub width="50" height="50" />
+      </a>
+    </li>
+    <li>
+      <a
+        href="https://www.linkedin.com/in/randy-ochoa/"
+        title="LinkedIn"
+        target="_blank"
+      >
+        <IconLinkedIn width="50" height="50" />
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<style>
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    height: 10vh;
+    padding: 20px;
+    margin: auto;
+    border-bottom: 1px var(--text-shadow) solid;
+
+    h1 {
+      font-size: 30px;
+      text-align: center;
+      line-height: 0.9;
+      margin: 0;
+      color: var(--color-primary);
+    }
+
+    ul {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0;
+      list-style: none;
+
+      a {
+        display: inline-block;
+        transition: 0.2s ease transform;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+
+        &:visited {
+          color: initial;
+        }
+      }
+    }
+  }
+</style>
