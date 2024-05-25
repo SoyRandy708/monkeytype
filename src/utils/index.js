@@ -13,8 +13,10 @@ const INITIAL_TIME = 3
 
 let currentTime = INITIAL_TIME
 let words = []
-let playing
+let isPlaying
 let clock
+let counterTypeError
+// TODO: Hacer que el counterTypeError no cuente errores de mas cuando hay 2 errores seguidos y se intenta correjir
 
 startEvents()
 startGame()
@@ -25,9 +27,11 @@ function startGame () {
   $game.style.display = 'grid'
   $results.style.display = 'none'
   $input.value = ''
-  clearInterval(clock)
 
-  playing = false
+  clearInterval(clock)
+  counterTypeError = 0
+  isPlaying = false
+
   words = INITIAL_WORDS.toSorted(
     () => Math.random() - 0.5
   ).slice(0, 10)
@@ -59,12 +63,13 @@ function startEvents () {
   document.addEventListener('keydown', () => {
     $input.focus()
 
-    if (!playing) {
-      playing = true
+    if (!isPlaying) {
+      isPlaying = true
       startTimer()
     }
   })
 
+  // TODO: Poner un solo event listener con el keydown para quitar error de que salta a la siguiente palabra antes de poner la ultima letra
   $input.addEventListener('keydown', onKeyDown)
   $input.addEventListener('keyup', onKeyUp)
   $reloadButton.addEventListener('click', startGame)
@@ -100,14 +105,25 @@ function onKeyDown (event) {
     const className = hasIncorrectLetters ? 'marked' : 'correct'
 
     $currentWord.classList.add(className)
+
+    const $emptyLetters = $currentWord.querySelectorAll('letter:not(.correct, .incorrect)')
+
+    $emptyLetters.forEach(letter => letter.classList.add('empty'))
+
+    const hasEmptyLetters = $currentWord.querySelectorAll('letter.empty').length > 0
+
+    if (hasEmptyLetters) {
+      ++counterTypeError
+    }
+
     return
   }
 
   if (key === 'Backspace') {
     const $prevWord = $currentWord.previousElementSibling
     const $prevLetter = $currentLetter.previousElementSibling
-    const $prevWordMarked = $prevWord.classList.contains('marked')
-    const $letterToGo = $prevWord.querySelector('letter:last-child')
+    const $prevWordMarked = $prevWord?.classList.contains('marked')
+    const $letterToGo = $prevWord?.querySelector('letter:last-child')
 
     if (!$prevWord && !$prevLetter) {
       event.preventDefault()
@@ -133,26 +149,39 @@ function onKeyDown (event) {
 function onKeyUp () {
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord.querySelector('letter.active')
+  const $allLetters = $currentWord.querySelectorAll('letter')
+  const inputLength = $input.value.length
+  const $nextActiveLetter = $allLetters[inputLength]
 
   const textWord = $currentWord.innerText
   $input.maxLength = textWord.length
-
-  const $allLetters = $currentWord.querySelectorAll('letter')
 
   $allLetters.forEach(letter => letter.classList.remove('correct', 'incorrect'))
 
   $input.value.split('').forEach((letra, index) => {
     const letterToCheck = textWord[index]
     const $letter = $allLetters[index]
-
     const isCorrect = letra === letterToCheck
     const className = isCorrect ? 'correct' : 'incorrect'
+
     $letter.classList.add(className)
   });
 
+  let tengoEscribir = $currentWord.innerText[inputLength - 1]
+  let escribi = $input.value.split('')[inputLength - 1]
+  const esIgual = tengoEscribir === escribi
+
+  const noEsMala = $currentLetter?.classList?.contains('incorrect')
+  // console.log(noEsMala)
+
+  if (inputLength > 0 && !esIgual) {
+    // console.log({ tengoEscribir, escribi })
+    ++counterTypeError
+  }
+
+  // console.log(counterTypeError)
+
   $currentLetter.classList.remove('active', 'is-last')
-  const inputLength = $input.value.length
-  const $nextActiveLetter = $allLetters[inputLength]
 
   if ($nextActiveLetter) {
     $nextActiveLetter.classList.add('active')
@@ -182,8 +211,7 @@ function endGame () {
   const correctLetters = $paragraph.querySelectorAll('letter.correct').length
   const incorrectLetters = $paragraph.querySelectorAll('letter.incorrect').length
 
-  // TODO: Hacer acumulador para contar todos los errores que tuvo el usuario mientras escriba y no solo los errores que estan al final
-  const totalLetters = correctLetters + incorrectLetters
+  const totalLetters = correctLetters + incorrectLetters + counterTypeError
   const acurrancy = totalLetters > 0
     ? (correctLetters / totalLetters) * 100
     : 0
