@@ -9,13 +9,14 @@ const $wpm = document.querySelector('#results .wpm')
 const $currancy = document.querySelector('#results .currancy')
 const $reloadButton = document.querySelector("#button-reload")
 
-const INITIAL_TIME = 3
+const INITIAL_TIME = 10
 
 let currentTime = INITIAL_TIME
 let words = []
 let isPlaying
 let clock
 let counterTypeError
+// TODO: Palabras con acentos dan problemas al escribir
 // TODO: Hacer que el counterTypeError no cuente errores de mas cuando hay 2 errores seguidos y se intenta correjir
 
 startEvents()
@@ -69,9 +70,8 @@ function startEvents () {
     }
   })
 
-  // TODO: Poner un solo event listener con el keydown para quitar error de que salta a la siguiente palabra antes de poner la ultima letra
+  $input.addEventListener('keydown', onKeyUp)
   $input.addEventListener('keydown', onKeyDown)
-  $input.addEventListener('keyup', onKeyUp)
   $reloadButton.addEventListener('click', startGame)
 }
 
@@ -164,22 +164,18 @@ function onKeyUp () {
     const isCorrect = letra === letterToCheck
     const className = isCorrect ? 'correct' : 'incorrect'
 
-    $letter.classList.add(className)
+    $letter?.classList.add(className)
   });
 
-  let tengoEscribir = $currentWord.innerText[inputLength - 1]
-  let escribi = $input.value.split('')[inputLength - 1]
-  const esIgual = tengoEscribir === escribi
+  let letterToWrite = $currentWord.innerText[inputLength - 1]
+  let iWrote = $input.value.split('')[inputLength - 1]
+  const isEqual = letterToWrite === iWrote
 
-  const noEsMala = $currentLetter?.classList?.contains('incorrect')
-  // console.log(noEsMala)
+  // const noEsMala = $currentLetter?.classList?.contains('incorrect')
 
-  if (inputLength > 0 && !esIgual) {
-    // console.log({ tengoEscribir, escribi })
+  if (inputLength > 0 && !isEqual) {
     ++counterTypeError
   }
-
-  // console.log(counterTypeError)
 
   $currentLetter.classList.remove('active', 'is-last')
 
