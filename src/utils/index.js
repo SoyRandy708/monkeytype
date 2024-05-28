@@ -16,7 +16,6 @@ let words = []
 let isPlaying
 let clock
 let counterTypeError
-// TODO: Palabras con acentos dan problemas al escribir
 // TODO: Hacer que el counterTypeError no cuente errores de mas cuando hay 2 errores seguidos y se intenta correjir
 
 startEvents()
@@ -70,8 +69,8 @@ function startEvents () {
     }
   })
 
-  $input.addEventListener('keydown', onKeyUp)
-  $input.addEventListener('keydown', onKeyDown)
+  $input.addEventListener('keyup', onKeyLetter)
+  $input.addEventListener('keyup', onKeyDown)
   $reloadButton.addEventListener('click', startGame)
 }
 
@@ -146,19 +145,25 @@ function onKeyDown (event) {
   }
 }
 
-function onKeyUp () {
+function onKeyLetter (event) {
+  const { key } = event
+  if (key === ' ') return
+
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord.querySelector('letter.active')
   const $allLetters = $currentWord.querySelectorAll('letter')
   const inputLength = $input.value.length
-  const $nextActiveLetter = $allLetters[inputLength]
-
+  const inputLetters = $input.value.split('')
+  const nextActiveLetter = $allLetters[inputLength]
   const textWord = $currentWord.innerText
-  $input.maxLength = textWord.length
+  const letterToWrite = textWord[inputLength - 1]
+  const iWrote = inputLetters[inputLength - 1]
+  const isEqual = letterToWrite === iWrote
 
+  $input.maxLength = textWord.length
   $allLetters.forEach(letter => letter.classList.remove('correct', 'incorrect'))
 
-  $input.value.split('').forEach((letra, index) => {
+  inputLetters.forEach((letra, index) => {
     const letterToCheck = textWord[index]
     const $letter = $allLetters[index]
     const isCorrect = letra === letterToCheck
@@ -167,20 +172,14 @@ function onKeyUp () {
     $letter?.classList.add(className)
   });
 
-  let letterToWrite = $currentWord.innerText[inputLength - 1]
-  let iWrote = $input.value.split('')[inputLength - 1]
-  const isEqual = letterToWrite === iWrote
-
-  // const noEsMala = $currentLetter?.classList?.contains('incorrect')
-
   if (inputLength > 0 && !isEqual) {
     ++counterTypeError
   }
 
   $currentLetter.classList.remove('active', 'is-last')
 
-  if ($nextActiveLetter) {
-    $nextActiveLetter.classList.add('active')
+  if (nextActiveLetter) {
+    nextActiveLetter.classList.add('active')
   } else {
     $currentLetter.classList.add('active', 'is-last')
     // TODO: Hacer que la animacion del cursor se haga correctamente en la ultima letra de la palabra
