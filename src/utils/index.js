@@ -34,10 +34,15 @@ function startGame () {
 
   words = INITIAL_WORDS.toSorted(
     () => Math.random() - 0.5
-  ).slice(0, 10)
+  ).slice(0, 100)
 
   currentTime = INITIAL_TIME
   $time.textContent = currentTime
+
+  $paragraph.scroll({
+    top: 0,
+    behavior: 'smooth',
+  })
 
   $paragraph.innerHTML = words.map((palabra) => {
     const words = palabra.split('')
@@ -175,6 +180,11 @@ function onKeyLetter (event) {
   if (inputLength > 0 && !isEqual) {
     ++counterTypeError
   }
+
+  $currentWord.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+  })
 
   $currentLetter.classList.remove('active', 'is-last')
 
