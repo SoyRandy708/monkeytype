@@ -1,6 +1,7 @@
 import { palabras as INITIAL_WORDS } from "@/constants/palabras"
 
 const $time = document.querySelector("#time")
+const $word = document.querySelector("#word")
 const $paragraph = document.querySelector("#paragraph")
 const $input = document.querySelector("#input")
 const $game = document.querySelector('#game')
@@ -8,10 +9,15 @@ const $results = document.querySelector('#results')
 const $wpm = document.querySelector('#results .wpm')
 const $currancy = document.querySelector('#results .currancy')
 const $reloadButton = document.querySelector("#button-reload")
+const $navModifiers = document.querySelector('#modifiers')
 const $gameModifiers = document.querySelectorAll('#modifiers ul li')
 
 let initialTime = 10
 let currentTime
+let isTimeActive = true
+let initialWords = 100
+let numberWords
+let numberWordsPassed
 let words = []
 let isPlaying
 let clock
@@ -19,30 +25,57 @@ let counterTypeError
 // TODO: Hacer que el counterTypeError no cuente errores de mas cuando hay 2 errores seguidos y se intenta correjir
 
 startEvents()
-startGame()
+resetGame()
 
 // TODO: CUANDO ESTE TERMINADO, AGREGAR MAS PALABRAS, PONER MAS PALABRAS INICIALES, CAMBIAR EL TIEMPO INICIAL, AGREGAR README Y PONER MIS REDES SOCIALES
 
-function startGame () {
+function resetGame () {
   $game.style.display = 'grid'
   $results.style.display = 'none'
+  $navModifiers.style.display = 'flex'
   $input.value = ''
 
   clearInterval(clock)
   counterTypeError = 0
+  numberWordsPassed = 0
   isPlaying = false
-
-  words = INITIAL_WORDS.toSorted(
-    () => Math.random() - 0.5
-  ).slice(0, 100)
 
   currentTime = initialTime
   $time.textContent = currentTime
+  numberWords = `${numberWordsPassed} / ${initialWords}`
+  $word.textContent = numberWords
+
+  addWordsToParagraph()
 
   $paragraph.scroll({
     top: 0,
     behavior: 'smooth',
   })
+}
+
+function startEvents () {
+  document.addEventListener('keydown', () => {
+    $input.focus()
+
+    if (!isPlaying) {
+      isPlaying = true
+      startTimer()
+      $navModifiers.style.display = 'none'
+    }
+  })
+
+  $input.addEventListener('keyup', onKeyLetter)
+  $input.addEventListener('keyup', onKeyDown)
+  $reloadButton.addEventListener('click', resetGame)
+  $gameModifiers.forEach(mofidier => {
+    mofidier.addEventListener('click', modifyGame)
+  })
+}
+
+function addWordsToParagraph () {
+  words = INITIAL_WORDS.toSorted(
+    () => Math.random() - 0.5
+  ).slice(0, initialWords)
 
   $paragraph.innerHTML = words.map((palabra) => {
     const words = palabra.split('')
@@ -64,27 +97,27 @@ function startGame () {
   $currentLetter.classList.add('active')
 }
 
-function startEvents () {
-  document.addEventListener('keydown', () => {
-    $input.focus()
+function useTimeOrWords () {
+  if (isTimeActive) {
+    initialWords = 100
+    $time.style.display = 'inline'
+    $word.style.display = 'none'
+  } else {
+    $time.style.display = 'none'
+    $word.style.display = 'inline'
+  }
 
-    if (!isPlaying) {
-      isPlaying = true
-      startTimer()
-    }
-  })
-
-  $input.addEventListener('keyup', onKeyLetter)
-  $input.addEventListener('keyup', onKeyDown)
-  $reloadButton.addEventListener('click', startGame)
-  $gameModifiers.forEach(mofidier => {
-    mofidier.addEventListener('click', modifyGame)
-  })
+  addWordsToParagraph()
 }
 
 function onKeyDown (event) {
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord.querySelector('letter.active')
+
+  $currentWord.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+  })
 
   const { key } = event
   if (key === ' ') {
@@ -100,24 +133,22 @@ function onKeyDown (event) {
 
     $currentWord.classList.remove('active', 'marked')
     $currentLetter.classList.remove('active')
-
     $nextWord.classList.add('active')
     $nextLetter.classList.add('active')
 
     $input.value = ''
+    numberWordsPassed++
+    numberWords = `${numberWordsPassed} / ${initialWords}`
+    $word.textContent = numberWords
 
     const hasIncorrectLetters =
       $currentWord.querySelectorAll('letter:not(.correct)').length > 0
-
     const className = hasIncorrectLetters ? 'marked' : 'correct'
+    const $emptyLetters = $currentWord.querySelectorAll('letter:not(.correct, .incorrect)')
+    const hasEmptyLetters = $currentWord.querySelectorAll('letter.empty').length > 0
 
     $currentWord.classList.add(className)
-
-    const $emptyLetters = $currentWord.querySelectorAll('letter:not(.correct, .incorrect)')
-
     $emptyLetters.forEach(letter => letter.classList.add('empty'))
-
-    const hasEmptyLetters = $currentWord.querySelectorAll('letter.empty').length > 0
 
     if (hasEmptyLetters) {
       ++counterTypeError
@@ -139,11 +170,15 @@ function onKeyDown (event) {
 
     if ($prevWordMarked && !$prevLetter) {
       event.preventDefault()
+
       $prevWord.classList.remove('marked')
       $prevWord.classList.add('active')
-
       $currentLetter.classList.remove('active')
       $letterToGo.classList.add('active')
+
+      numberWordsPassed--
+      numberWords = `${numberWordsPassed} / ${initialWords}`
+      $word.textContent = numberWords
 
       $input.value = [
         ...$prevWord.querySelectorAll('letter.correct, letter.incorrect')
@@ -184,11 +219,6 @@ function onKeyLetter (event) {
     ++counterTypeError
   }
 
-  $currentWord.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-  })
-
   $currentLetter.classList.remove('active', 'is-last')
 
   if (nextActiveLetter) {
@@ -212,7 +242,16 @@ function modifyGame (event) {
     initialTime = element.textContent
     currentTime = initialTime
     $time.textContent = currentTime
+    isTimeActive = true
+  } else if (classNameParent.contains('words')) {
+    element.classList.add('active')
+    initialWords = element.textContent
+    numberWords = `${numberWordsPassed} / ${initialWords}`
+    $word.textContent = numberWords
+    isTimeActive = false
   }
+
+  useTimeOrWords()
 }
 
 function startTimer () {
@@ -220,7 +259,7 @@ function startTimer () {
     currentTime--
     $time.textContent = currentTime
 
-    if (currentTime <= 0) {
+    if (currentTime <= 0 && isTimeActive) {
       clearInterval(clock)
       endGame()
     }
@@ -240,6 +279,7 @@ function endGame () {
     ? (correctLetters / totalLetters) * 100
     : 0
   const wpm = correctWords * 60 / initialTime
+  // TODO: usar el tiempo que paso para sacar el wpm y no el elegido (solo pasaron 21s y no 30)
 
   $wpm.textContent = `${wpm}`
   $currancy.textContent = `${acurrancy.toFixed(2)}%`
