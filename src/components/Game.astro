@@ -1,4 +1,24 @@
 <section id="game">
+  <!-- TODO: Poner opciones para poder customizar partida, tiempo, numero de palabras, etc -->
+  <article id="modifiers">
+    <ul>
+      <li>Tiempo</li>
+      <li>Palabras</li>
+    </ul>
+    <ul class="time">
+      <li>15</li>
+      <li class="active">30</li>
+      <li>60</li>
+      <li>120</li>
+    </ul>
+    <ul class="words">
+      <li>10</li>
+      <li>25</li>
+      <li>50</li>
+      <li>100</li>
+    </ul>
+  </article>
+
   <time id="time"></time>
   <p id="paragraph"></p>
   <input id="input" autofocus autocomplete="off" />
@@ -10,6 +30,32 @@
     place-content: center;
     min-height: 90vh;
     padding: 20px;
+
+    article {
+      display: flex;
+      gap: 50px;
+      background-color: #3f3d3b;
+      padding: 0px 10px;
+      margin: auto auto 100px auto;
+      border-radius: 10px;
+
+      ul {
+        display: flex;
+        list-style: none;
+        gap: 5px;
+        padding: 0;
+        color: var(--text-shadow);
+
+        li {
+          cursor: pointer;
+          padding: 10px;
+
+          &.active {
+            color: var(--color-primary);
+          }
+        }
+      }
+    }
 
     time {
       font-size: 25px;

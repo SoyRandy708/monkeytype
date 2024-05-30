@@ -8,10 +8,10 @@ const $results = document.querySelector('#results')
 const $wpm = document.querySelector('#results .wpm')
 const $currancy = document.querySelector('#results .currancy')
 const $reloadButton = document.querySelector("#button-reload")
+const $gameModifiers = document.querySelectorAll('#modifiers ul li')
 
-const INITIAL_TIME = 10
-
-let currentTime = INITIAL_TIME
+let initialTime = 10
+let currentTime
 let words = []
 let isPlaying
 let clock
@@ -36,7 +36,7 @@ function startGame () {
     () => Math.random() - 0.5
   ).slice(0, 100)
 
-  currentTime = INITIAL_TIME
+  currentTime = initialTime
   $time.textContent = currentTime
 
   $paragraph.scroll({
@@ -77,6 +77,9 @@ function startEvents () {
   $input.addEventListener('keyup', onKeyLetter)
   $input.addEventListener('keyup', onKeyDown)
   $reloadButton.addEventListener('click', startGame)
+  $gameModifiers.forEach(mofidier => {
+    mofidier.addEventListener('click', modifyGame)
+  })
 }
 
 function onKeyDown (event) {
@@ -196,6 +199,22 @@ function onKeyLetter (event) {
   }
 }
 
+function modifyGame (event) {
+  const classNameParent = event.target.parentElement.classList
+  const element = event.target
+
+  $gameModifiers.forEach(modifier => {
+    modifier.classList.remove('active')
+  })
+
+  if (classNameParent.contains('time')) {
+    element.classList.add('active')
+    initialTime = element.textContent
+    currentTime = initialTime
+    $time.textContent = currentTime
+  }
+}
+
 function startTimer () {
   clock = setInterval(() => {
     currentTime--
@@ -220,7 +239,7 @@ function endGame () {
   const acurrancy = totalLetters > 0
     ? (correctLetters / totalLetters) * 100
     : 0
-  const wpm = correctWords * 60 / INITIAL_TIME
+  const wpm = correctWords * 60 / initialTime
 
   $wpm.textContent = `${wpm}`
   $currancy.textContent = `${acurrancy.toFixed(2)}%`
