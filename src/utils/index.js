@@ -10,7 +10,9 @@ const $wpm = document.querySelector('#results .wpm')
 const $currancy = document.querySelector('#results .currancy')
 const $reloadButton = document.querySelector("#button-reload")
 const $navModifiers = document.querySelector('#modifiers')
-const $gameModifiers = document.querySelectorAll('#modifiers ul li')
+const $gameModifierTime = document.querySelector('#modifiers .show_time')
+const $gameModifierLetters = document.querySelector('#modifiers .show_words')
+const $gameModifiersOptions = document.querySelectorAll('#modifiers .modifier li')
 
 let initialTime = 10
 let currentTime
@@ -32,7 +34,7 @@ resetGame()
 function resetGame () {
   $game.style.display = 'grid'
   $results.style.display = 'none'
-  $navModifiers.style.display = 'flex'
+  $navModifiers.classList.remove('hidden')
   $input.value = ''
 
   clearInterval(clock)
@@ -53,6 +55,10 @@ function resetGame () {
   })
 }
 
+function startGame () {
+  $navModifiers.classList.add('hidden')
+}
+
 function startEvents () {
   document.addEventListener('keydown', () => {
     $input.focus()
@@ -60,14 +66,14 @@ function startEvents () {
     if (!isPlaying) {
       isPlaying = true
       startTimer()
-      $navModifiers.style.display = 'none'
+      startGame()
     }
   })
 
   $input.addEventListener('keyup', onKeyLetter)
   $input.addEventListener('keyup', onKeyDown)
   $reloadButton.addEventListener('click', resetGame)
-  $gameModifiers.forEach(mofidier => {
+  $gameModifiersOptions.forEach(mofidier => {
     mofidier.addEventListener('click', modifyGame)
   })
 }
@@ -233,18 +239,24 @@ function modifyGame (event) {
   const classNameParent = event.target.parentElement.classList
   const element = event.target
 
-  $gameModifiers.forEach(modifier => {
+  $gameModifiersOptions.forEach(modifier => {
     modifier.classList.remove('active')
   })
 
   if (classNameParent.contains('time')) {
+    $gameModifierTime.classList.add('active')
+    $gameModifierLetters.classList.remove('active')
     element.classList.add('active')
+
     initialTime = element.textContent
     currentTime = initialTime
     $time.textContent = currentTime
     isTimeActive = true
   } else if (classNameParent.contains('words')) {
+    $gameModifierTime.classList.remove('active')
+    $gameModifierLetters.classList.add('active')
     element.classList.add('active')
+
     initialWords = element.textContent
     numberWords = `${numberWordsPassed} / ${initialWords}`
     $word.textContent = numberWords

@@ -1,22 +1,35 @@
+---
+import IconText from "./Icons/IconText.astro";
+import IconTime from "./Icons/IconTime.astro";
+---
+
 <section id="game">
-  <!-- TODO: Poner opciones para poder customizar partida, tiempo, numero de palabras, etc -->
-  <article id="modifiers">
-    <ul>
-      <li>Tiempo</li>
-      <li>Palabras</li>
-    </ul>
-    <ul class="time">
-      <li>15</li>
-      <li class="active">30</li>
-      <li>60</li>
-      <li>120</li>
-    </ul>
-    <ul class="words">
-      <li>10</li>
-      <li>25</li>
-      <li>50</li>
-      <li>100</li>
-    </ul>
+  <article id="modifiers" class="modifiers">
+    <div>
+      <ul class="show show_time active">
+        <IconTime />
+        <li>Tiempo</li>
+      </ul>
+      <ul class="modifier time">
+        <li>15</li>
+        <li class="active">30</li>
+        <li>60</li>
+        <li>120</li>
+      </ul>
+    </div>
+    <div>
+      <ul class="show show_words">
+        <IconText />
+        <li>Palabras</li>
+      </ul>
+
+      <ul class="modifier words">
+        <li>10</li>
+        <li>25</li>
+        <li>50</li>
+        <li>100</li>
+      </ul>
+    </div>
   </article>
 
   <div class="counters">
@@ -31,22 +44,46 @@
 <style>
   #game {
     display: grid;
+    position: relative;
     place-content: center;
     min-height: 90vh;
     padding: 20px;
 
-    article {
+    .modifiers {
       display: flex;
       position: absolute;
-      justify-self: center;
-      gap: 50px;
+      width: 100%;
+      justify-content: space-around;
+      top: 25px;
+      width: 100%;
       background-color: #3f3d3b;
       padding: 10px;
       margin: auto auto 100px auto;
       border-radius: 10px;
 
+      &.hidden {
+        animation: fadeIn 0.3s forwards;
+      }
+
+      div {
+        display: flex;
+      }
+
+      .show {
+        gap: 0;
+
+        &.active {
+          color: var(--color-primary);
+        }
+      }
+
+      .modifier {
+        cursor: pointer;
+      }
+
       ul {
         display: flex;
+        align-items: center;
         list-style: none;
         gap: 5px;
         padding: 0;
@@ -54,7 +91,6 @@
         color: var(--text-shadow);
 
         li {
-          cursor: pointer;
           padding: 10px;
 
           &.active {
@@ -110,7 +146,7 @@
         color: var(--color-primary);
         position: absolute;
         left: -50%;
-        animation: 1s parpadeo infinite ease-in-out;
+        animation: 1s blinking infinite ease-in-out;
       }
 
       &.is-last::before {
@@ -135,13 +171,25 @@
     }
   }
 
-  @keyframes parpadeo {
+  @keyframes blinking {
     25% {
       opacity: 1;
     }
 
     75% {
       opacity: 0;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 100%;
+      display: flex;
+    }
+
+    100% {
+      opacity: 0;
+      display: none;
     }
   }
 </style>
