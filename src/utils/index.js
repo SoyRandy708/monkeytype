@@ -25,6 +25,7 @@ let isPlaying
 let clock
 let counterTypeError
 // TODO: Hacer que el counterTypeError no cuente errores de mas cuando hay 2 errores seguidos y se intenta correjir
+// TODO: Error al quitar la ultima letra de una palabra salta a la palabra anterior
 
 startEvents()
 resetGame()
@@ -164,22 +165,29 @@ function onKeyDown (event) {
   }
 
   if (key === 'Backspace') {
-    const $prevWord = $currentWord.previousElementSibling
-    const $prevLetter = $currentLetter.previousElementSibling
-    const $prevWordMarked = $prevWord?.classList.contains('marked')
-    const $letterToGo = $prevWord?.querySelector('letter:last-child')
+    const $previousWord = $currentWord.previousElementSibling
+    const $previousLetter = $currentLetter.previousElementSibling
+    const $previousWordMarked = $previousWord?.classList.contains('marked')
 
-    if (!$prevWord && !$prevLetter) {
+    if (!$previousWord && !$previousLetter) {
       event.preventDefault()
       return
     }
 
-    if ($prevWordMarked && !$prevLetter) {
+    if ($previousWordMarked && !$previousLetter) {
       event.preventDefault()
+      const $previousWordAllLetters = $previousWord?.querySelectorAll('letter')
+      const $previousWordLettersFilled = $previousWord?.querySelectorAll('letter:not(.empty)')
+      const $letterToGo = $previousWordLettersFilled.length === 0
+        ? $previousWord?.querySelector('letter:first-child')
+        : $previousWordLettersFilled[$previousWordLettersFilled.length - 1].nextElementSibling ??
+        $previousWordLettersFilled[$previousWordLettersFilled.length - 1]
 
-      $prevWord.classList.remove('marked')
-      $prevWord.classList.add('active')
+      $previousWordAllLetters.forEach(letter => letter.classList.remove('empty'))
+      $previousWord.classList.remove('marked')
+      $currentWord.classList.remove('active')
       $currentLetter.classList.remove('active')
+      $previousWord.classList.add('active')
       $letterToGo.classList.add('active')
 
       numberWordsPassed--
@@ -187,7 +195,7 @@ function onKeyDown (event) {
       $word.textContent = numberWords
 
       $input.value = [
-        ...$prevWord.querySelectorAll('letter.correct, letter.incorrect')
+        ...$previousWord.querySelectorAll('letter.correct, letter.incorrect')
       ].map(char => char.classList.contains('correct') ? char.innerText : '*').join('')
       return
     }
@@ -200,6 +208,7 @@ function onKeyLetter (event) {
 
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord.querySelector('letter.active')
+  const $lastLetter = $currentWord.querySelector('letter:last-child')
   const $allLetters = $currentWord.querySelectorAll('letter')
   const inputLength = $input.value.length
   const inputLetters = $input.value.split('')
@@ -225,13 +234,12 @@ function onKeyLetter (event) {
     ++counterTypeError
   }
 
-  $currentLetter.classList.remove('active', 'is-last')
+  $currentLetter.classList.remove('active', 'is-last', 'empty')
 
   if (nextActiveLetter) {
     nextActiveLetter.classList.add('active')
   } else {
-    $currentLetter.classList.add('active', 'is-last')
-    // TODO: Hacer que la animacion del cursor se haga correctamente en la ultima letra de la palabra
+    $lastLetter.classList.add('active', 'is-last')
   }
 }
 
