@@ -1,0 +1,32 @@
+---
+import IconReload from "./Icons/IconReload.astro";
+---
+
+<button class="button-reload">
+  <IconReload width="40" height="40" />
+</button>
+
+<style>
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 50px;
+    background-color: var(--text-correct);
+    padding: 5px 10px;
+    opacity: 0.8;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition:
+      scale 0.3s ease,
+      opacity 0.3s ease;
+
+    &:hover {
+      scale: 1.1;
+      opacity: 1;
+    }
+  }
+</style>

@@ -1,5 +1,5 @@
 ---
-import IconReload from "./Icons/IconReload.astro";
+import ButtonReload from "./ButtonReload.astro";
 ---
 
 <section id="results">
@@ -13,9 +13,7 @@ import IconReload from "./Icons/IconReload.astro";
     <h3 class="currancy"></h3>
   </div>
 
-  <button id="button-reload">
-    <IconReload width="50" height="50" />
-  </button>
+  <ButtonReload />
 </section>
 
 <style>
@@ -35,23 +33,6 @@ import IconReload from "./Icons/IconReload.astro";
       margin: 0;
       font-size: 40px;
       color: var(--color-primary);
-    }
-
-    button {
-      background-color: var(--text-correct);
-      padding: 5px 10px;
-      opacity: 0.8;
-      border-radius: 10px;
-      cursor: pointer;
-      outline: none;
-      transition:
-        scale 0.3s ease,
-        opacity 0.3s ease;
-
-      &:hover {
-        scale: 1.1;
-        opacity: 1;
-      }
     }
   }
 </style>

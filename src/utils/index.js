@@ -8,7 +8,7 @@ const $game = document.querySelector('#game')
 const $results = document.querySelector('#results')
 const $wpm = document.querySelector('#results .wpm')
 const $currancy = document.querySelector('#results .currancy')
-const $reloadButton = document.querySelector("#button-reload")
+const $reloadButtons = document.querySelectorAll(".button-reload")
 const $navModifiers = document.querySelector('#modifiers')
 const $gameModifierTime = document.querySelector('#modifiers .show_time')
 const $gameModifierLetters = document.querySelector('#modifiers .show_words')
@@ -73,7 +73,9 @@ function startEvents () {
 
   $input.addEventListener('keyup', onKeyLetter)
   $input.addEventListener('keyup', onKeyDown)
-  $reloadButton.addEventListener('click', resetGame)
+  $reloadButtons.forEach(button => {
+    button.addEventListener('click', resetGame)
+  })
   $gameModifiersOptions.forEach(mofidier => {
     mofidier.addEventListener('click', modifyGame)
   })
