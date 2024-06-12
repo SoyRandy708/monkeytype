@@ -18,7 +18,6 @@ let initialTime = 10
 let currentTime
 let isTimeActive = true
 let initialWords = 100
-let numberWords
 let numberWordsPassed
 let words = []
 let isPlaying
@@ -44,9 +43,8 @@ function resetGame () {
   isPlaying = false
 
   currentTime = initialTime
-  $time.textContent = currentTime
-  numberWords = `${numberWordsPassed} / ${initialWords}`
-  $word.textContent = numberWords
+  formattedTime()
+  formattedNumberWords()
 
   addWordsToParagraph()
 
@@ -119,6 +117,14 @@ function useTimeOrWords () {
   addWordsToParagraph()
 }
 
+function formattedTime () {
+  $time.textContent = `${currentTime}s`
+}
+
+function formattedNumberWords () {
+  $word.textContent = `${numberWordsPassed} / ${initialWords}`
+}
+
 function onKeyDown (event) {
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord.querySelector('letter.active')
@@ -147,8 +153,7 @@ function onKeyDown (event) {
 
     $input.value = ''
     numberWordsPassed++
-    numberWords = `${numberWordsPassed} / ${initialWords}`
-    $word.textContent = numberWords
+    formattedNumberWords()
 
     const hasIncorrectLetters =
       $currentWord.querySelectorAll('letter:not(.correct)').length > 0
@@ -193,8 +198,7 @@ function onKeyDown (event) {
       $letterToGo.classList.add('active')
 
       numberWordsPassed--
-      numberWords = `${numberWordsPassed} / ${initialWords}`
-      $word.textContent = numberWords
+      formattedNumberWords()
 
       $input.value = [
         ...$previousWord.querySelectorAll('letter.correct, letter.incorrect')
@@ -260,7 +264,7 @@ function modifyGame (event) {
 
     initialTime = element.textContent
     currentTime = initialTime
-    $time.textContent = currentTime
+    formattedTime()
     isTimeActive = true
   } else if (classNameParent.contains('words')) {
     $gameModifierTime.classList.remove('active')
@@ -268,8 +272,7 @@ function modifyGame (event) {
     element.classList.add('active')
 
     initialWords = element.textContent
-    numberWords = `${numberWordsPassed} / ${initialWords}`
-    $word.textContent = numberWords
+    formattedNumberWords()
     isTimeActive = false
   }
 
@@ -279,7 +282,7 @@ function modifyGame (event) {
 function startTimer () {
   clock = setInterval(() => {
     currentTime--
-    $time.textContent = currentTime
+    formattedTime()
 
     if (currentTime <= 0 && isTimeActive) {
       clearInterval(clock)
