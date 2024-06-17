@@ -14,7 +14,7 @@ const $gameModifierTime = document.querySelector('#modifiers .show_time')
 const $gameModifierLetters = document.querySelector('#modifiers .show_words')
 const $gameModifiersOptions = document.querySelectorAll('#modifiers .modifier li')
 
-let initialTime = 10
+let maxInitialTime = 10
 let currentTime
 let isTimeActive = true
 let initialWords = 100
@@ -40,12 +40,11 @@ function resetGame () {
   clearInterval(clock)
   counterTypeError = 0
   numberWordsPassed = 0
+  currentTime = 0
   isPlaying = false
 
-  currentTime = initialTime
   formattedTime()
   formattedNumberWords()
-
   addWordsToParagraph()
 
   $paragraph.scroll({
@@ -118,7 +117,7 @@ function useTimeOrWords () {
 }
 
 function formattedTime () {
-  $time.textContent = `${currentTime}s`
+  $time.textContent = `${maxInitialTime - currentTime}s`
 }
 
 function formattedNumberWords () {
@@ -141,15 +140,10 @@ function onKeyDown (event) {
     const $nextWord = $currentWord.nextElementSibling
     const $nextLetter = $nextWord?.querySelector('letter')
 
-    if (!$nextWord) {
-      endGame()
-      return
-    }
-
-    $currentWord.classList.remove('active', 'marked')
-    $currentLetter.classList.remove('active')
-    $nextWord.classList.add('active')
-    $nextLetter.classList.add('active')
+    $currentWord?.classList.remove('active', 'marked')
+    $currentLetter?.classList.remove('active')
+    $nextWord?.classList.add('active')
+    $nextLetter?.classList.add('active')
 
     $input.value = ''
     numberWordsPassed++
@@ -163,6 +157,11 @@ function onKeyDown (event) {
 
     $currentWord.classList.add(className)
     $emptyLetters.forEach(letter => letter.classList.add('empty'))
+
+    if (!$nextWord) {
+      endGame()
+      return
+    }
 
     if (hasEmptyLetters) {
       ++counterTypeError
@@ -262,8 +261,7 @@ function modifyGame (event) {
     $gameModifierLetters.classList.remove('active')
     element.classList.add('active')
 
-    initialTime = element.textContent
-    currentTime = initialTime
+    maxInitialTime = element.textContent
     formattedTime()
     isTimeActive = true
   } else if (classNameParent.contains('words')) {
@@ -281,10 +279,10 @@ function modifyGame (event) {
 
 function startTimer () {
   clock = setInterval(() => {
-    currentTime--
+    currentTime++
     formattedTime()
 
-    if (currentTime <= 0 && isTimeActive) {
+    if (maxInitialTime - currentTime === 0 && isTimeActive) {
       clearInterval(clock)
       endGame()
     }
@@ -303,9 +301,8 @@ function endGame () {
   const acurrancy = totalLetters > 0
     ? (correctLetters / totalLetters) * 100
     : 0
-  const wpm = correctWords * 60 / initialTime
-  // TODO: usar el tiempo que paso para sacar el wpm y no el elegido (solo pasaron 21s y no 30)
+  const wpm = correctWords * 60 / currentTime
 
-  $wpm.textContent = `${wpm}`
+  $wpm.textContent = `${Math.trunc(wpm)}`
   $currancy.textContent = `${acurrancy.toFixed(2)}%`
 }
