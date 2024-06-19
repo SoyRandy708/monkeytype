@@ -1,18 +1,21 @@
 import { palabras as INITIAL_WORDS } from "@/constants/palabras"
 
-const $time = document.querySelector("#time")
-const $word = document.querySelector("#word")
-const $paragraph = document.querySelector("#paragraph")
-const $input = document.querySelector("#input")
-const $game = document.querySelector('#game')
-const $results = document.querySelector('#results')
-const $wpm = document.querySelector('#results .wpm')
-const $currancy = document.querySelector('#results .currancy')
-const $reloadButtons = document.querySelectorAll(".button-reload")
-const $navModifiers = document.querySelector('#modifiers')
-const $gameModifierTime = document.querySelector('#modifiers .show_time')
-const $gameModifierLetters = document.querySelector('#modifiers .show_words')
-const $gameModifiersOptions = document.querySelectorAll('#modifiers .modifier li')
+const $ = elemento => document.querySelector(elemento)
+const $$ = elementos => document.querySelectorAll(elementos)
+
+const $time = $("#time")
+const $word = $("#word")
+const $paragraph = $("#paragraph")
+const $input = $("#input")
+const $game = $('#game')
+const $results = $('#results')
+const $wpm = $('#results .wpm')
+const $currancy = $('#results .currancy')
+const $$reloadButtons = $$(".button-reload")
+const $navModifiers = $('#modifiers')
+const $gameModifierTime = $('#modifiers .show_time')
+const $gameModifierLetters = $('#modifiers .show_words')
+const $$gameModifiersOptions = $$('#modifiers .modifier li')
 
 let maxInitialTime = 10
 let currentTime
@@ -23,7 +26,6 @@ let words = []
 let isPlaying
 let clock
 let counterTypeError
-// TODO: Hacer que el counterTypeError no cuente errores de mas cuando hay 2 errores seguidos y se intenta correjir
 // TODO: Error al quitar la ultima letra de una palabra salta a la palabra anterior
 
 startEvents()
@@ -70,10 +72,10 @@ function startEvents () {
 
   $input.addEventListener('keyup', onKeyLetter)
   $input.addEventListener('keyup', onKeyDown)
-  $reloadButtons.forEach(button => {
+  $$reloadButtons.forEach(button => {
     button.addEventListener('click', resetGame)
   })
-  $gameModifiersOptions.forEach(mofidier => {
+  $$gameModifiersOptions.forEach(mofidier => {
     mofidier.addEventListener('click', modifyGame)
   })
 }
@@ -126,7 +128,7 @@ function formattedNumberWords () {
 
 function onKeyDown (event) {
   const $currentWord = $paragraph.querySelector('word.active')
-  const $currentLetter = $currentWord.querySelector('letter.active')
+  const $currentLetter = $currentWord?.querySelector('letter.active')
 
   $currentWord.scrollIntoView({
     behavior: 'smooth',
@@ -153,21 +155,19 @@ function onKeyDown (event) {
       $currentWord.querySelectorAll('letter:not(.correct)').length > 0
     const className = hasIncorrectLetters ? 'marked' : 'correct'
     const $emptyLetters = $currentWord.querySelectorAll('letter:not(.correct, .incorrect)')
-    const hasEmptyLetters = $currentWord.querySelectorAll('letter.empty').length > 0
 
     $currentWord.classList.add(className)
     $emptyLetters.forEach(letter => letter.classList.add('empty'))
 
-    if (!$nextWord) {
-      endGame()
-      return
-    }
+    const hasEmptyLetters = $currentWord.querySelectorAll('letter.empty').length > 0
 
     if (hasEmptyLetters) {
       ++counterTypeError
     }
 
-    return
+    if (!$nextWord) {
+      endGame()
+    }
   }
 
   if (key === 'Backspace') {
@@ -204,6 +204,12 @@ function onKeyDown (event) {
       ].map(char => char.classList.contains('correct') ? char.innerText : '*').join('')
       return
     }
+
+    const containsErrorPreviousLetter = $previousLetter.classList.contains('incorrect')
+
+    if (containsErrorPreviousLetter) {
+      --counterTypeError
+    }
   }
 }
 
@@ -212,7 +218,7 @@ function onKeyLetter (event) {
   if (key === ' ') return
 
   const $currentWord = $paragraph.querySelector('word.active')
-  const $currentLetter = $currentWord.querySelector('letter.active')
+  const $currentLetter = $currentWord?.querySelector('letter.active')
   const $lastLetter = $currentWord.querySelector('letter:last-child')
   const $allLetters = $currentWord.querySelectorAll('letter')
   const inputLength = $input.value.length
@@ -252,7 +258,7 @@ function modifyGame (event) {
   const classNameParent = event.target.parentElement.classList
   const element = event.target
 
-  $gameModifiersOptions.forEach(modifier => {
+  $$gameModifiersOptions.forEach(modifier => {
     modifier.classList.remove('active')
   })
 
