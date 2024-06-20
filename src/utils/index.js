@@ -26,7 +26,6 @@ let words = []
 let isPlaying
 let clock
 let counterTypeError
-// TODO: Error al quitar la ultima letra de una palabra salta a la palabra anterior
 
 startEvents()
 resetGame()
@@ -71,7 +70,8 @@ function startEvents () {
   })
 
   $input.addEventListener('keyup', onKeyLetter)
-  $input.addEventListener('keyup', onKeyDown)
+  $input.addEventListener('keyup', onKeySpace)
+  $input.addEventListener('keydown', onKeyBackspace)
   $$reloadButtons.forEach(button => {
     button.addEventListener('click', resetGame)
   })
@@ -126,49 +126,10 @@ function formattedNumberWords () {
   $word.textContent = `${numberWordsPassed} / ${initialWords}`
 }
 
-function onKeyDown (event) {
+function onKeyBackspace (event) {
+  const { key } = event
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord?.querySelector('letter.active')
-
-  $currentWord.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-  })
-
-  const { key } = event
-  if (key === ' ') {
-    event.preventDefault()
-
-    const $nextWord = $currentWord.nextElementSibling
-    const $nextLetter = $nextWord?.querySelector('letter')
-
-    $currentWord?.classList.remove('active', 'marked')
-    $currentLetter?.classList.remove('active')
-    $nextWord?.classList.add('active')
-    $nextLetter?.classList.add('active')
-
-    $input.value = ''
-    numberWordsPassed++
-    formattedNumberWords()
-
-    const hasIncorrectLetters =
-      $currentWord.querySelectorAll('letter:not(.correct)').length > 0
-    const className = hasIncorrectLetters ? 'marked' : 'correct'
-    const $emptyLetters = $currentWord.querySelectorAll('letter:not(.correct, .incorrect)')
-
-    $currentWord.classList.add(className)
-    $emptyLetters.forEach(letter => letter.classList.add('empty'))
-
-    const hasEmptyLetters = $currentWord.querySelectorAll('letter.empty').length > 0
-
-    if (hasEmptyLetters) {
-      ++counterTypeError
-    }
-
-    if (!$nextWord) {
-      endGame()
-    }
-  }
 
   if (key === 'Backspace') {
     const $previousWord = $currentWord.previousElementSibling
@@ -209,6 +170,51 @@ function onKeyDown (event) {
 
     if (containsErrorPreviousLetter) {
       --counterTypeError
+    }
+  }
+}
+
+function onKeySpace (event) {
+  const $currentWord = $paragraph.querySelector('word.active')
+  const $currentLetter = $currentWord?.querySelector('letter.active')
+
+  $currentWord.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+  })
+
+  const { key } = event
+  if (key === ' ') {
+    event.preventDefault()
+
+    const $nextWord = $currentWord.nextElementSibling
+    const $nextLetter = $nextWord?.querySelector('letter')
+
+    $currentWord?.classList.remove('active', 'marked')
+    $currentLetter?.classList.remove('active')
+    $nextWord?.classList.add('active')
+    $nextLetter?.classList.add('active')
+
+    $input.value = ''
+    numberWordsPassed++
+    formattedNumberWords()
+
+    const hasIncorrectLetters =
+      $currentWord.querySelectorAll('letter:not(.correct)').length > 0
+    const className = hasIncorrectLetters ? 'marked' : 'correct'
+    const $emptyLetters = $currentWord.querySelectorAll('letter:not(.correct, .incorrect)')
+
+    $currentWord.classList.add(className)
+    $emptyLetters.forEach(letter => letter.classList.add('empty'))
+
+    const hasEmptyLetters = $currentWord.querySelectorAll('letter.empty').length > 0
+
+    if (hasEmptyLetters) {
+      ++counterTypeError
+    }
+
+    if (!$nextWord) {
+      endGame()
     }
   }
 }
