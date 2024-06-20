@@ -15,17 +15,18 @@ import IconReload from "./Icons/IconReload.astro";
     height: 50px;
     background-color: var(--text-correct);
     padding: 5px 10px;
-    opacity: 0.8;
+    opacity: 0.6;
     border-radius: 10px;
     border: none;
     outline: none;
     cursor: pointer;
-    transition:
-      scale 0.3s ease,
-      opacity 0.3s ease;
+    transition: opacity 0.3s ease;
 
     &:hover {
-      scale: 1.1;
+      opacity: 0.8;
+    }
+
+    &:active {
       opacity: 1;
     }
   }

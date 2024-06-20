@@ -17,7 +17,7 @@ const $gameModifierTime = $('#modifiers .show_time')
 const $gameModifierLetters = $('#modifiers .show_words')
 const $$gameModifiersOptions = $$('#modifiers .modifier li')
 
-let maxInitialTime = 10
+let maxInitialTime = 30
 let currentTime
 let isTimeActive = true
 let initialWords = 100
