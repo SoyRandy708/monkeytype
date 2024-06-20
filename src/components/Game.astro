@@ -59,14 +59,19 @@ import IconTime from "./Icons/IconTime.astro";
       width: 100%;
       justify-content: space-around;
       top: 25px;
-      width: 100%;
       background-color: #3f3d3b;
       padding: 10px;
       margin: auto auto 100px auto;
       border-radius: 10px;
 
+      @media (width < 700px) {
+        flex-direction: column;
+        width: min-content;
+      }
+
       div {
         display: flex;
+        justify-content: space-between;
       }
 
       .show {
