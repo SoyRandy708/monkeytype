@@ -3,6 +3,7 @@ import ButtonReload from "./ButtonReload.astro";
 ---
 
 <section id="results">
+  <canvas id="grafica"></canvas>
   <div>
     <h2>WPM</h2>
     <h3 class="wpm"></h3>
@@ -17,6 +18,11 @@ import ButtonReload from "./ButtonReload.astro";
 </section>
 
 <style>
+  #grafica {
+    width: 300px;
+    height: 300px;
+  }
+
   #results {
     display: none;
     place-content: center;

@@ -1,4 +1,5 @@
 import { palabras as INITIAL_WORDS } from "@/constants/palabras"
+import { Chart } from 'chart.js/auto'
 
 const $ = elemento => document.querySelector(elemento)
 const $$ = elementos => document.querySelectorAll(elementos)
@@ -26,17 +27,20 @@ let words = []
 let isPlaying
 let clock
 let counterTypeError
+let myChart
+let dataChart = []
 
 startEvents()
 resetGame()
 
-// TODO: CUANDO ESTE TERMINADO, AGREGAR MAS PALABRAS, PONER MAS PALABRAS INICIALES, CAMBIAR EL TIEMPO INICIAL, AGREGAR README Y PONER MIS REDES SOCIALES
+// TODO: AGREGAR README Y MAS DATOS AL FINAL DE LA PARTIDA
 
 function resetGame () {
   $game.style.display = 'grid'
   $results.style.display = 'none'
   $navModifiers.classList.remove('hidden')
   $input.value = ''
+  dataChart = []
 
   clearInterval(clock)
   counterTypeError = 0
@@ -166,7 +170,7 @@ function onKeyBackspace (event) {
       return
     }
 
-    const containsErrorPreviousLetter = $previousLetter.classList.contains('incorrect')
+    const containsErrorPreviousLetter = $previousLetter?.classList.contains('incorrect')
 
     if (containsErrorPreviousLetter) {
       --counterTypeError
@@ -178,7 +182,7 @@ function onKeySpace (event) {
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord?.querySelector('letter.active')
 
-  $currentWord.scrollIntoView({
+  $currentWord?.scrollIntoView({
     behavior: 'smooth',
     block: 'center',
   })
@@ -225,8 +229,8 @@ function onKeyLetter (event) {
 
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord?.querySelector('letter.active')
-  const $lastLetter = $currentWord.querySelector('letter:last-child')
-  const $allLetters = $currentWord.querySelectorAll('letter')
+  const $lastLetter = $currentWord?.querySelector('letter:last-child')
+  const $allLetters = $currentWord?.querySelectorAll('letter')
   const inputLength = $input.value.length
   const inputLetters = $input.value.split('')
   const nextActiveLetter = $allLetters[inputLength]
@@ -254,9 +258,9 @@ function onKeyLetter (event) {
   $currentLetter.classList.remove('active', 'is-last', 'empty')
 
   if (nextActiveLetter) {
-    nextActiveLetter.classList.add('active')
+    nextActiveLetter?.classList.add('active')
   } else {
-    $lastLetter.classList.add('active', 'is-last')
+    $lastLetter?.classList.add('active', 'is-last')
   }
 }
 
@@ -293,6 +297,7 @@ function startTimer () {
   clock = setInterval(() => {
     currentTime++
     formattedTime()
+    addDataToChart()
 
     if (maxInitialTime - currentTime === 0 && isTimeActive) {
       clearInterval(clock)
@@ -315,6 +320,62 @@ function endGame () {
     : 0
   const wpm = correctWords * 60 / currentTime
 
+  drawChart()
   $wpm.textContent = `${Math.trunc(wpm)}`
   $currancy.textContent = `${acurrancy.toFixed(2)}%`
+}
+
+function addDataToChart () {
+  const correctWords = $paragraph.querySelectorAll('word.correct').length
+  const wpm = correctWords * 60 / currentTime
+
+  dataChart.push({ x: `${currentTime}s`, y: Math.trunc(wpm) })
+}
+
+function drawChart () {
+  if (myChart) {
+    myChart.destroy();
+  }
+
+  const $grafica = $('#grafica').getContext('2d')
+
+  let optionsChart = {
+    type: 'line',
+    data: {
+      datasets: [{
+        data: dataChart,
+        tension: 0.3,
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'WPM',
+            font: {
+              size: 15,
+            }
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Segundos',
+            font: {
+              size: 15,
+            }
+          }
+        }
+      }
+    }
+  }
+
+  myChart = new Chart($grafica, optionsChart)
 }
