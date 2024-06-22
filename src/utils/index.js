@@ -10,13 +10,15 @@ const $paragraph = $("#paragraph")
 const $input = $("#input")
 const $game = $('#game')
 const $results = $('#results')
-const $wpm = $('#results .wpm')
-const $currancy = $('#results .currancy')
+const $wpmResult = $('#results .wpm')
+const $currancyResult = $('#results .currancy')
+const $timeResult = $("#results .time")
 const $$reloadButtons = $$(".button-reload")
 const $navModifiers = $('#modifiers')
 const $gameModifierTime = $('#modifiers .show_time')
 const $gameModifierLetters = $('#modifiers .show_words')
 const $$gameModifiersOptions = $$('#modifiers .modifier li')
+const $grafica = $('#chart').getContext('2d')
 
 let maxInitialTime = 30
 let currentTime
@@ -234,7 +236,7 @@ function onKeyLetter (event) {
   const inputLength = $input.value.length
   const inputLetters = $input.value.split('')
   const nextActiveLetter = $allLetters[inputLength]
-  const textWord = $currentWord.innerText
+  const textWord = $currentWord?.innerText
   const letterToWrite = textWord[inputLength - 1]
   const iWrote = inputLetters[inputLength - 1]
   const isEqual = letterToWrite === iWrote
@@ -320,9 +322,11 @@ function endGame () {
     : 0
   const wpm = correctWords * 60 / currentTime
 
+  clearInterval(clock)
   drawChart()
-  $wpm.textContent = `${Math.trunc(wpm)}`
-  $currancy.textContent = `${acurrancy.toFixed(2)}%`
+  $wpmResult.textContent = `${Math.trunc(wpm)}`
+  $currancyResult.textContent = `${Math.trunc(acurrancy)}%`
+  $timeResult.textContent = `${currentTime}s`
 }
 
 function addDataToChart () {
@@ -336,8 +340,6 @@ function drawChart () {
   if (myChart) {
     myChart.destroy();
   }
-
-  const $grafica = $('#grafica').getContext('2d')
 
   let optionsChart = {
     type: 'line',
