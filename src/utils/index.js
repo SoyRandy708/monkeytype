@@ -1,5 +1,6 @@
 import { palabras as INITIAL_WORDS } from "@/constants/palabras"
 import { Chart } from 'chart.js/auto'
+import confetti from 'canvas-confetti'
 
 const $ = elemento => document.querySelector(elemento)
 const $$ = elementos => document.querySelectorAll(elementos)
@@ -315,6 +316,16 @@ function startTimer () {
   }, 1000)
 }
 
+function fire (particleRatio, opts) {
+  const count = 300
+
+  confetti({
+    origin: { y: 0.7 },
+    ...opts,
+    particleCount: Math.floor(count * particleRatio)
+  })
+}
+
 function endGame () {
   $game.style.display = 'none'
   $results.style.display = 'grid'
@@ -334,6 +345,29 @@ function endGame () {
   $wpmResult.textContent = `${Math.trunc(wpm)}`
   $currancyResult.textContent = `${Math.trunc(acurrancy)}%`
   $timeResult.textContent = `${currentTime}s`
+
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  })
+  fire(0.2, {
+    spread: 60,
+  })
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8
+  })
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2
+  })
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  })
 }
 
 function addDataToChart () {
