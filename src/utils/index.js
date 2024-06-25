@@ -29,8 +29,10 @@ let words = []
 let isPlaying
 let clock
 let counterTypeError
+let counterTypeErrorPerSecond
 let myChart
 let dataChart = []
+let dataErrorChart = []
 
 startEvents()
 resetGame()
@@ -43,9 +45,11 @@ function resetGame () {
   $navModifiers.classList.remove('hidden')
   $input.value = ''
   dataChart = []
+  dataErrorChart = []
 
   clearInterval(clock)
   counterTypeError = 0
+  counterTypeErrorPerSecond = 0
   numberWordsPassed = 0
   currentTime = 0
   isPlaying = false
@@ -176,6 +180,7 @@ function onKeyBackspace (event) {
 
     if (containsErrorPreviousLetter) {
       --counterTypeError
+      --counterTypeErrorPerSecond
     }
   }
 }
@@ -217,6 +222,7 @@ function onKeySpace (event) {
 
     if (hasEmptyLetters) {
       ++counterTypeError
+      ++counterTypeErrorPerSecond
     }
 
     if (!$nextWord) {
@@ -255,6 +261,7 @@ function onKeyLetter (event) {
 
   if (inputLength > 0 && !isEqual) {
     ++counterTypeError
+    ++counterTypeErrorPerSecond
   }
 
   $currentLetter.classList.remove('active', 'is-last', 'empty')
@@ -332,8 +339,11 @@ function endGame () {
 function addDataToChart () {
   const correctWords = $paragraph.querySelectorAll('word.correct').length
   const wpm = correctWords * 60 / currentTime
+  const counterError = counterTypeErrorPerSecond > 0 ? counterTypeErrorPerSecond : NaN
 
   dataChart.push({ x: `${currentTime}s`, y: Math.trunc(wpm) })
+  dataErrorChart.push({ x: `${currentTime}s`, y: counterError })
+  counterTypeErrorPerSecond = 0
 }
 
 function drawChart () {
@@ -345,14 +355,36 @@ function drawChart () {
     type: 'line',
     data: {
       datasets: [{
+        label: 'Errores',
+        radius: 5,
+        data: dataErrorChart,
+        tension: 0.3,
+        backgroundColor: "#ca4754",
+        borderColor: "transparent",
+        yAxisID: 'error',
+        pointStyle: 'crossRot',
+        pointBorderColor: "#ca4754",
+        pointRadius: 5,
+        pointHoverRadius: 5,
+        pointBorderWidth: 3,
+        pointHoverBorderWidth: 3,
+      },
+      {
+        label: 'WPM',
         data: dataChart,
         tension: 0.3,
+        backgroundColor: "#e2b712",
+        borderColor: "#e2b712",
       }]
     },
     options: {
       plugins: {
         legend: {
           display: false,
+        },
+        tooltip: {
+          intersect: false,
+          mode: 'index',
         }
       },
       scales: {
@@ -364,7 +396,24 @@ function drawChart () {
             font: {
               size: 15,
             }
-          }
+          },
+          ticks: {
+            stepSize: 4,
+          },
+        },
+        error: {
+          beginAtZero: true,
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Errores',
+            font: {
+              size: 15,
+            },
+          },
+          ticks: {
+            stepSize: 1,
+          },
         },
         x: {
           title: {
