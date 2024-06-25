@@ -8,16 +8,25 @@ import ButtonReload from "./ButtonReload.astro";
   <article class="information">
     <div>
       <h2>WPM</h2>
+      <p class="tooltip">Palabras Por Minuto</p>
       <h3 class="wpm"></h3>
     </div>
 
     <div>
       <h2>Precisión</h2>
+      <p class="tooltip">Precisión</p>
       <h3 class="currancy"></h3>
     </div>
 
     <div>
+      <h2>Caracteres</h2>
+      <p class="tooltip">Correctos, Incorrectos</p>
+      <h3 class="characters"></h3>
+    </div>
+
+    <div>
       <h2>Tiempo</h2>
+      <p class="tooltip">Tiempo</p>
       <h3 class="time"></h3>
     </div>
 
@@ -48,12 +57,31 @@ import ButtonReload from "./ButtonReload.astro";
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        &:hover .tooltip {
+          transform: translateY(-50px);
+          opacity: 1;
+        }
       }
 
       h2 {
         font-size: 20px;
         margin: 0;
         color: var(--text-shadow);
+      }
+
+      .tooltip {
+        position: absolute;
+        opacity: 0;
+        padding: 5px;
+        border-radius: 10px;
+        text-align: center;
+        background-color: var(--text-shadow);
+        font-size: 16px;
+        transform: translateY(-25px);
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
       }
 
       h3 {

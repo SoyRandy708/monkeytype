@@ -12,6 +12,7 @@ const $input = $("#input")
 const $game = $('#game')
 const $results = $('#results')
 const $wpmResult = $('#results .wpm')
+const $charactersResult = $("#results .characters")
 const $currancyResult = $('#results .currancy')
 const $timeResult = $("#results .time")
 const $$reloadButtons = $$(".button-reload")
@@ -343,6 +344,7 @@ function endGame () {
   clearInterval(clock)
   drawChart()
   $wpmResult.textContent = `${Math.trunc(wpm)}`
+  $charactersResult.textContent = `${correctLetters}/${counterTypeError}`
   $currancyResult.textContent = `${Math.trunc(acurrancy)}%`
   $timeResult.textContent = `${currentTime}s`
 
