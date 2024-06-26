@@ -39,13 +39,12 @@ let dataErrorChart = []
 startEvents()
 resetGame()
 
-// TODO: AGREGAR README Y MAS DATOS AL FINAL DE LA PARTIDA
-
 function resetGame () {
   $game.style.display = 'grid'
   $results.style.display = 'none'
   $navModifiers.classList.remove('hidden')
   $input.value = ''
+  $input.focus()
   dataChart = []
   dataErrorChart = []
 
@@ -79,6 +78,10 @@ function startEvents () {
       startTimer()
       startGame()
     }
+  })
+
+  $paragraph.addEventListener('click', () => {
+    $input.focus()
   })
 
   $input.addEventListener('keyup', onKeyLetter)
