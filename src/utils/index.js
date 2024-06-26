@@ -84,6 +84,9 @@ function startEvents () {
     $input.focus()
   })
 
+  $input.addEventListener('touchstart', onKeyLetter)
+  $input.addEventListener('touchstart', onKeySpace)
+  $input.addEventListener('touchstart', onKeyBackspace)
   $input.addEventListener('keyup', onKeyLetter)
   $input.addEventListener('keyup', onKeySpace)
   $input.addEventListener('keydown', onKeyBackspace)
@@ -199,8 +202,8 @@ function onKeySpace (event) {
     block: 'center',
   })
 
-  const { key, keyCode } = event
-  if (key === ' ' || keyCode === 32) {
+  const { key, code } = event
+  if (key === ' ' || code === 'Space') {
     event.preventDefault()
 
     const $nextWord = $currentWord.nextElementSibling
@@ -237,8 +240,8 @@ function onKeySpace (event) {
 }
 
 function onKeyLetter (event) {
-  const { key, keyCode } = event
-  if (key === ' ' || keyCode === 32) return
+  const { key, code } = event
+  if (key === ' ' || code === 'Space') return
 
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord?.querySelector('letter.active')
