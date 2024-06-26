@@ -38,8 +38,10 @@ import IconTime from "./Icons/IconTime.astro";
     <p id="word"></p>
   </div>
 
-  <p id="paragraph"></p>
-  <input id="input" autofocus autocomplete="off" />
+  <div class="paragraph_container">
+    <p id="paragraph"></p>
+    <input id="input" autofocus autocomplete="off" />
+  </div>
 
   <ButtonReload />
 </section>
@@ -121,16 +123,28 @@ import IconTime from "./Icons/IconTime.astro";
         display: none;
       }
     }
+    .paragraph_container {
+      position: relative;
 
-    p {
-      display: flex;
-      flex-wrap: wrap;
-      align-content: start;
-      height: 100px;
-      overflow: hidden;
-      gap: 5px 10px;
-      font-size: 24px;
-      line-height: 28px;
+      p {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: start;
+        height: 100px;
+        overflow: hidden;
+        gap: 5px 10px;
+        font-size: 24px;
+        line-height: 28px;
+      }
+
+      input {
+        height: 30px;
+        position: absolute;
+        top: calc(50% - 15px);
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+      }
     }
 
     word {
@@ -167,14 +181,6 @@ import IconTime from "./Icons/IconTime.astro";
       &.incorrect {
         color: var(--text-error);
       }
-    }
-
-    input {
-      opacity: 0;
-      position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none;
     }
   }
 

@@ -199,8 +199,8 @@ function onKeySpace (event) {
     block: 'center',
   })
 
-  const { key, code } = event
-  if (key === ' ' || code === 'Space') {
+  const { key, keyCode } = event
+  if (key === ' ' || keyCode === 32) {
     event.preventDefault()
 
     const $nextWord = $currentWord.nextElementSibling
@@ -237,8 +237,8 @@ function onKeySpace (event) {
 }
 
 function onKeyLetter (event) {
-  const { key, code } = event
-  if (key === ' ' || code === 'Space') return
+  const { key, keyCode } = event
+  if (key === ' ' || keyCode === 32) return
 
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord?.querySelector('letter.active')
