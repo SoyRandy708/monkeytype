@@ -10,11 +10,47 @@ const { title } = Astro.props;
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <!-- HTML Meta Tags -->
     <title>{title}</title>
+    <meta
+      name="description"
+      content="Clon de Monkey Type con Astro, Css y JS"
+    />
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://monkeytype-randy.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MonkeyType" />
+    <meta
+      property="og:description"
+      content="Clon de Monkey Type con Astro, Css y JS"
+    />
+    <meta
+      property="og:image"
+      content="https://pub-f2166e82e8a447aca3e1787fac4b59bd.r2.dev/monkeytype/monkeytype_mockup_1.webp"
+    />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="monkeytype-randy.vercel.app" />
+    <meta
+      property="twitter:url"
+      content="https://monkeytype-randy.vercel.app/"
+    />
+    <meta name="twitter:title" content="MonkeyType" />
+    <meta
+      name="twitter:description"
+      content="Clon de Monkey Type con Astro, Css y JS"
+    />
+    <meta
+      name="twitter:image"
+      content="https://pub-f2166e82e8a447aca3e1787fac4b59bd.r2.dev/monkeytype/monkeytype_mockup_1.webp"
+    />
+
+    <!-- Meta Tags Generated via https://www.opengraph.xyz -->
   </head>
   <body>
     <slot />
