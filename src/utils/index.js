@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti'
 
 const $ = elemento => document.querySelector(elemento)
 const $$ = elementos => document.querySelectorAll(elementos)
-
+const $test = $("#test")
 const $time = $("#time")
 const $word = $("#word")
 const $paragraph = $("#paragraph")
@@ -145,11 +145,12 @@ function formattedNumberWords () {
 }
 
 function onKeyBackspace (event) {
-  const { key } = event
+  const { key, code } = event
+  $test.textContent = `KEY: '${key}' CODE: '${code}'`
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord?.querySelector('letter.active')
 
-  if (key === 'Backspace') {
+  if (key === 'Backspace' || code === 'Backspace') {
     const $previousWord = $currentWord.previousElementSibling
     const $previousLetter = $currentLetter.previousElementSibling
     const $previousWordMarked = $previousWord?.classList.contains('marked')
@@ -203,6 +204,7 @@ function onKeySpace (event) {
   })
 
   const { key, code } = event
+  $test.textContent = `KEY: '${key}' CODE: '${code}'`
   if (key === ' ' || code === 'Space') {
     event.preventDefault()
 
@@ -241,6 +243,7 @@ function onKeySpace (event) {
 
 function onKeyLetter (event) {
   const { key, code } = event
+  $test.textContent = `KEY: '${key}' CODE: '${code}'`
   if (key === ' ' || code === 'Space') return
 
   const $currentWord = $paragraph.querySelector('word.active')
