@@ -4,7 +4,6 @@ import confetti from 'canvas-confetti'
 
 const $ = elemento => document.querySelector(elemento)
 const $$ = elementos => document.querySelectorAll(elementos)
-const $test = $("#test")
 const $time = $("#time")
 const $word = $("#word")
 const $paragraph = $("#paragraph")
@@ -44,7 +43,6 @@ function resetGame () {
   $results.style.display = 'none'
   $navModifiers.classList.remove('hidden')
   $input.value = ''
-  $input.focus()
   dataChart = []
   dataErrorChart = []
 
@@ -84,9 +82,6 @@ function startEvents () {
     $input.focus()
   })
 
-  $input.addEventListener('touchstart', onKeyLetter)
-  $input.addEventListener('touchstart', onKeySpace)
-  $input.addEventListener('touchstart', onKeyBackspace)
   $input.addEventListener('keyup', onKeyLetter)
   $input.addEventListener('keyup', onKeySpace)
   $input.addEventListener('keydown', onKeyBackspace)
@@ -146,7 +141,6 @@ function formattedNumberWords () {
 
 function onKeyBackspace (event) {
   const { key, code } = event
-  $test.textContent = `KEY: '${key}' CODE: '${code}'`
   const $currentWord = $paragraph.querySelector('word.active')
   const $currentLetter = $currentWord?.querySelector('letter.active')
 
@@ -204,7 +198,6 @@ function onKeySpace (event) {
   })
 
   const { key, code } = event
-  $test.textContent = `KEY: '${key}' CODE: '${code}'`
   if (key === ' ' || code === 'Space') {
     event.preventDefault()
 
@@ -243,7 +236,6 @@ function onKeySpace (event) {
 
 function onKeyLetter (event) {
   const { key, code } = event
-  $test.textContent = `KEY: '${key}' CODE: '${code}'`
   if (key === ' ' || code === 'Space') return
 
   const $currentWord = $paragraph.querySelector('word.active')

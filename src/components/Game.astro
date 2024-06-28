@@ -8,7 +8,9 @@ import IconTime from "./Icons/IconTime.astro";
   <article id="modifiers" class="modifiers">
     <div>
       <ul class="show show_time active">
-        <IconTime />
+        <li class="icon_container">
+          <IconTime />
+        </li>
         <li>Tiempo</li>
       </ul>
       <ul class="modifier time">
@@ -20,7 +22,9 @@ import IconTime from "./Icons/IconTime.astro";
     </div>
     <div>
       <ul class="show show_words">
-        <IconText />
+        <li class="icon_container">
+          <IconText />
+        </li>
         <li>Palabras</li>
       </ul>
 
@@ -37,11 +41,15 @@ import IconTime from "./Icons/IconTime.astro";
     <time id="time"></time>
     <p id="word"></p>
   </div>
-  <p id="test"></p>
 
   <div class="paragraph_container">
     <p id="paragraph"></p>
-    <input id="input" autofocus autocomplete="off" />
+    <input
+      id="input"
+      autofocus
+      autocomplete="off"
+      aria-label="Entrada de datos"
+    />
   </div>
 
   <ButtonReload />
@@ -83,6 +91,10 @@ import IconTime from "./Icons/IconTime.astro";
 
         &.active {
           color: var(--color-primary);
+        }
+
+        .icon_container {
+          padding: 0;
         }
       }
 
